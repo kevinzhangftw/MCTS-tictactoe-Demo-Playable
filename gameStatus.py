@@ -6,6 +6,12 @@ class GameStatus(object):
                       [' ', ' ', ' '],
                       [' ', ' ', ' ']]
 
+	def move(self, row, col):
+		print('Move: {} moves to ({}, {})'.format(self.turn(), row, col))
+		self.board[row][col] = self.turn()
+		print('{}'.format(self))
+
+
 	def winner(self):
 		for player in ['X','O']:
 			for row in range(3):
