@@ -1,8 +1,11 @@
 from gameStatus import GameStatus
+import networkx as nx
+
 
 def coordinate(players):
 	game = GameStatus() 
-	
+	G = initGraph(game)
+
 	round = 0
 	while game.winner() is None:
 		for player in players:
@@ -10,4 +13,12 @@ def coordinate(players):
 			print("\n=========(Round #{}. It is {}'s move.)========".format(round, game.turn()))
 
 			pass
-		pass
+
+
+
+def initGraph(game):
+	graph = nx.DiGraph()
+	graph.add_node(str(game))
+	root = str(game)
+	current = root
+	return graph
