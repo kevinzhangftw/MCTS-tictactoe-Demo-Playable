@@ -32,10 +32,6 @@ class MCTSPolicy(Policy):
 		self.num_simulations = 0
 		# Constant parameter to weight exploration vs. exploitation for UCT
 		self.uct_c = np.sqrt(2)
-		self.uct_c1 = 1
-		self.uct_c2 = 2
-		self.uct_c3 = 3
-		self.uct_c10= 10
 
 		self.node_counter = 0
 
@@ -60,9 +56,42 @@ class MCTSPolicy(Policy):
 				self.digraph.add_edge(empty_board_node_id, self.node_counter)
 				self.node_counter += 1
 
+	def selection(self, root):
+		"""
+		Starting at root, recursively select the best node that maximizes UCT
+		until a node is reached that has no explored children
+		Keeps track of the path traversed by adding each node to path as
+		it is visited
+		:return: the node to expand
+		"""
+		# In the case that the root node is not in the graph, add it
+		if root not in self.digraph.nodes():
+			self.digraph.add_node(self.node_counter,
+								  attr_dict={'w': 0,
+											 'n': 0,
+											 'uct': 0,
+											 'expanded': False,
+											 'state': root})
+			self.node_counter += 1
+			return root
+		elif not self.digraph.node[root]['expanded']:
+			print('root in digraph but not expanded')
+			return root  # This is the node to expand
+		else:
+			print('root expanded, move on to a child')
+			# Handle the general case
+			children = self.digraph.successors(root)
+			uct_values = {}
+			for child_node in children:
+				uct_values[child_node] = self.uct(state=child_node)
+
+			# Choose the child node that maximizes the expected value given by UCT
+			best_child_node = max(uct_values.items(), key=operator.itemgetter(1))[0]
+
+			return self.selection(best_child_node)
+
 	def move(self, starting_state):
-		print ('ai goes here')
-		starting_state = copy.deepcopy(starting_state)
+		# starting_state = copy.deepcopy(starting_state)
 		# todo: is that copy needed?
 
 		starting_node = None
@@ -140,5 +169,29 @@ class MCTSPolicy(Policy):
 			self.last_move = None
 
 		return move
+
+	def uct(self, state):
+		"""
+		Returns the expected value of a state, calculated as a weighted sum of
+		its exploitation value and exploration value
+		"""
+		n = self.digraph.node[state]['n']  # Number of plays from this node
+		w = self.digraph.node[state]['w']  # Number of wins from this node
+		t = self.num_simulations
+		c = self.uct_c
+		epsilon = EPSILON
+
+		exploitation_value = w / (n + epsilon)
+		exploration_value = c * np.sqrt(np.log(t) / (n + epsilon))
+		print('exploration_value: {}'.format(exploration_value))
+
+		value = exploitation_value + exploration_value
+
+		print('UCT value {:.3f} for state:\n{}'.format(value, state))
+
+		self.digraph.node[state]['uct'] = value
+
+		return value
+
 
 
