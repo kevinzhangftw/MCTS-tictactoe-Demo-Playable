@@ -9,7 +9,6 @@ class GameStatus(object):
 	def legal_moves(self):
 		if self.winner() is not None:
 			return []
-
 		possible_moves = []
 		for row in range(3):
 			for col in range(3):
@@ -52,6 +51,8 @@ class GameStatus(object):
 		output = output.replace(' ', '~')
 		return output
 
+	def printBoard(self):
+		print('{}'.format(self))
 
 	def move(self, row, col):
 		print ('Move: {} moves to ({}, {})'.format(self.turn(), row, col))

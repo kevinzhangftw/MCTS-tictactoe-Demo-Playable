@@ -5,20 +5,20 @@ import numpy as np
 
 
 class HumanPolicy(Policy):
-	def move(self, state):
-		print ('human moves here')
+	def move(self, gameStatus):
+		legal_moves = gameStatus.legal_moves()
+		print ('Available legal moves are:')
+		for i in legal_moves:
+		 	print i 
+		gameStatus.printBoard()
 
-		legal_moves = state.legal_moves()
-		idx = np.random.randint(len(legal_moves))
-		print ('idx is: {}'.format(idx))
-		print ('legal_moves[idx] is: {}'.format(legal_moves[idx])) 
-
-		policyInput = raw_input('Human, enter your next move: ')
-		# convert the string to a move
-		# Verify that the specified action is legal
-		# assert (row, col) in self.legal_moves()
-		# return the index of that move
+		policyInput = input('Human, enter your next move: ')
 		
-		return legal_moves[idx]
+		if policyInput < len(legal_moves):
+			print ('move legal! please continue')
+		else:
+			print ('move not allowed! undefined state here')
+		
+		return legal_moves[policyInput]
 
 
