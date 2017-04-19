@@ -3,9 +3,9 @@ from aiPlayer import MCTSPolicy
 import coordinator
 
 humanPlayer = HumanPolicy()
-aiPlayer = MCTSPolicy(player='O')
+aiPlayer = MCTSPolicy(player='X')
 
-players = [humanPlayer, aiPlayer]
+players = [aiPlayer, humanPlayer]
 coordinator.coordinate(players)
 
 

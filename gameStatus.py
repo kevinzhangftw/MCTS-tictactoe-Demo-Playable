@@ -5,6 +5,38 @@ class GameStatus(object):
 		self.board = [[' ', ' ', ' '],
 					  [' ', ' ', ' '],
 					  [' ', ' ', ' ']]
+	def __key(self):
+		return self.__str__()
+
+	def __eq__(x, y):
+		return x.__key() == y.__key()
+
+	def __hash__(self):
+		return hash(self.__key())
+
+	def __str__(self):
+		"""
+		Returns a string that is a visual representation of the game
+		state. Can be used to print the current game state of a game:
+		  print(game.state)
+		will print a game board:
+		  ~X~
+		  O~~
+		  ~~X
+		"""
+		output = ''
+		for row in range(3):
+			for col in range(3):
+				contents = self.board[row][col]
+				if col < 2:
+					output += '{}'.format(contents)
+				else:
+					output += '{}\n'.format(contents)
+
+		output = output.replace(' ', '~')
+
+		return output
+
 
 	def legal_moves(self):
 		if self.winner() is not None:
